@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小红书优化师考试系统</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+:root{--ink:#221a17;--paper:#f7f2ec;--card:#fffdfa;--line:#e3d9cd;--coral:#e0483d;--coral-d:#b5362d;--coral-soft:#fbe4e0;--blue:#2d5fc4;--blue-soft:#e0e9fa;--muted:#8a7d70}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--paper);color:var(--ink);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;
+background-image:radial-gradient(circle at 14% 8%,rgba(224,72,61,.05),transparent 38%),radial-gradient(circle at 86% 92%,rgba(45,95,196,.05),transparent 40%)}
+.logo{width:56px;height:56px;background:var(--coral);border-radius:14px 14px 14px 4px;position:relative;margin-bottom:18px}
+.logo::after{content:"小";position:absolute;inset:0;color:#fff;font-weight:900;font-size:28px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif}
+h1{font-family:'Noto Serif SC',serif;font-size:27px;font-weight:900;text-align:center}
+.sub{color:var(--muted);font-size:14px;margin:10px 0 34px;text-align:center}
+.cards{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;max-width:680px}
+.entry{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px 28px;width:300px;text-decoration:none;color:inherit;box-shadow:0 8px 30px rgba(80,40,30,.10);transition:.18s;display:block}
+.entry:hover{transform:translateY(-4px);box-shadow:0 14px 40px rgba(80,40,30,.16)}
+.entry .ic{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin-bottom:16px}
+.entry h2{font-family:'Noto Serif SC',serif;font-size:20px;margin-bottom:8px}
+.entry p{font-size:13.5px;color:var(--muted);line-height:1.6}
+.entry .go{margin-top:16px;font-size:14px;font-weight:700}
+.stu .ic{background:var(--coral)} .stu .go{color:var(--coral-d)}
+.mgr .ic{background:var(--blue)} .mgr .go{color:var(--blue)}
+.foot{margin-top:40px;font-size:12px;color:var(--muted);text-align:center}
+@media(max-width:680px){.entry{width:100%;max-width:340px}}
+</style>
+</head>
+<body>
+<div class="logo"></div>
+<h1 class="serif">小红书优化师考试系统</h1>
+<div class="sub">理解投放原理 · 掌握场景优化 · 自动识别知识薄弱项</div>
+<div class="cards">
+  <a class="entry stu" href="exam.html">
+    <div class="ic">✎</div>
+    <h2>学员入口</h2>
+    <p>在线答题、自动判分、查看能力雷达图，并复制成绩码提交给带教。</p>
+    <div class="go">进入答题 →</div>
+  </a>
+  <a class="entry mgr" href="dashboard.html">
+    <div class="ic">◆</div>
+    <h2>带教 / 管理员入口</h2>
+    <p>粘贴学员成绩码，自动汇总全员排行、薄弱项与团队雷达图。</p>
+    <div class="go">进入汇总台 →</div>
+  </a>
+</div>
+<div class="foot">学员请点「学员入口」即可 · 管理员入口供带教汇总成绩使用</div>
+</body>
+</html>

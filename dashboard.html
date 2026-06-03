@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教师汇总台 · 小红书优化师考试系统</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+:root{
+  --ink:#1c2230; --paper:#eef1f6; --card:#ffffff; --line:#d6dce6;
+  --brand:#2d5fc4; --brand-d:#214a9e; --brand-soft:#e0e9fa;
+  --coral:#e0483d; --coral-soft:#fbe4e0; --coral-d:#b5362d;
+  --green:#3f8a5c; --amber:#d99100; --muted:#7d8694;
+  --shadow:0 8px 30px rgba(30,40,70,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 90% 6%,rgba(45,95,196,.06),transparent 40%),radial-gradient(circle at 5% 95%,rgba(224,72,61,.05),transparent 42%);min-height:100vh}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 22px 80px}
+header.top{display:flex;align-items:center;gap:13px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.logo{width:32px;height:32px;background:var(--brand);border-radius:9px 9px 9px 2px;position:relative;flex:none}
+.logo::after{content:"师";position:absolute;inset:0;color:#fff;font-weight:900;font-size:17px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif}
+header.top h1{font-family:'Noto Serif SC',serif;font-weight:900;font-size:24px}
+header.top .ver{margin-left:auto;font-size:12px;color:var(--muted);letter-spacing:1px}
+.sub{font-size:13px;color:var(--muted);margin:8px 0 24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow);margin-bottom:20px}
+.card h2{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+.card h2 .n{width:23px;height:23px;background:var(--ink);color:#fff;border-radius:50%;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none}
+.card .desc{font-size:13px;color:var(--muted);margin-bottom:16px}
+textarea{width:100%;height:120px;padding:13px;border:1.5px solid var(--line);border-radius:11px;font-family:monospace;font-size:12.5px;background:var(--paper);resize:vertical;color:var(--ink)}
+textarea:focus{outline:none;border-color:var(--brand);background:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#fff;border:none;padding:12px 24px;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.18s;box-shadow:0 4px 14px rgba(45,95,196,.3)}
+.btn:hover{background:var(--brand-d);transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--brand);box-shadow:none;border:1.5px solid var(--brand)}
+.btn.ghost:hover{background:var(--brand-soft)}
+.btn.sm{padding:8px 16px;font-size:13px}
+.btn-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.hidden{display:none}
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.kpi{flex:1;min-width:130px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;box-shadow:var(--shadow)}
+.kpi .v{font-size:30px;font-weight:900;font-family:'Noto Serif SC',serif;line-height:1}
+.kpi .k{font-size:12px;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--ink);color:#fff;padding:11px 12px;text-align:left;font-weight:500;font-size:13px;white-space:nowrap}
+th:first-child{border-radius:8px 0 0 0}th:last-child{border-radius:0 8px 0 0}
+td{padding:10px 12px;border-bottom:1px solid var(--line)}
+tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--brand-soft)}
+.rank{font-weight:900;font-family:'Noto Serif SC',serif;color:var(--brand);width:30px;text-align:center}
+.rank.top{color:var(--amber)}
+.scoreCell{font-weight:700}
+.mini-bar{display:inline-block;width:54px;height:8px;border-radius:4px;background:var(--line);overflow:hidden;vertical-align:middle;margin-right:6px}
+.mini-fi{height:100%}
+.cell-weak{color:var(--coral-d);font-weight:700}
+.cell-ok{color:var(--green)}
+.badge{font-size:11px;padding:2px 9px;border-radius:14px;font-weight:700;display:inline-block;margin:2px 3px 2px 0}
+.badge.weak{background:var(--coral-soft);color:var(--coral-d)}
+.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.tab{padding:8px 18px;border-radius:30px;border:1.5px solid var(--line);font-size:13.5px;cursor:pointer;background:var(--card);transition:.15s}
+.tab.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.radar-box{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.parse-msg{font-size:13px;margin-top:10px;padding:10px 13px;border-radius:9px}
+.parse-ok{background:#e2efe6;color:var(--green)}
+.parse-err{background:var(--coral-soft);color:var(--coral-d)}
+.empty{text-align:center;color:var(--muted);padding:40px 20px}
+.empty .big{font-size:40px;margin-bottom:10px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:30px;font-size:14px;opacity:0;transition:.3s;z-index:99}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.team-weak{padding:14px 16px;border-radius:11px;font-size:14px;margin-top:14px}
+.team-weak.has{background:var(--coral-soft);color:var(--coral-d)}
+.team-weak.none{background:#e2efe6;color:var(--green)}
+@media(max-width:600px){.wrap{padding:20px 14px 60px}th,td{padding:8px 7px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><span class="logo"></span><h1 class="serif">教师汇总台</h1><span class="ver">小红书优化师考试系统 · V1.0</span></header>
+  <div class="sub">粘贴学员发来的成绩码，自动汇总全员看板、薄弱项与团队雷达图</div>
+
+  <div class="card">
+    <h2><span class="n">+</span>录入成绩码</h2>
+    <div class="desc">把学员发来的成绩码粘到这里，一行一个（可一次粘多个）。重复提交同一人同一时间的记录会自动去重。</div>
+    <textarea id="codeInput" placeholder="XHS1:xxxxx&#10;XHS1:yyyyy&#10;每行一个成绩码……"></textarea>
+    <div class="btn-row">
+      <button class="btn" id="addBtn">➕ 录入</button>
+      <button class="btn ghost sm" id="clearAll">清空全部数据</button>
+      <button class="btn ghost sm" id="exportCsv">导出 CSV</button>
+    </div>
+    <div id="parseMsg"></div>
+  </div>
+
+  <div id="board"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const MODULES=["A平台与流量原理","B账户与计划搭建","C定向与人群","D出价与成本控制","E创意与素材","F数据诊断与优化"];
+const MOD_SHORT={"A平台与流量原理":"平台原理","B账户与计划搭建":"账户搭建","C定向与人群":"定向人群","D出价与成本控制":"出价成本","E创意与素材":"创意素材","F数据诊断与优化":"数据诊断"};
+const WEAK=0.4,MIDV=0.25,DKEY='xhs_teacher_records';
+let view='person';
+
+function getRecs(){try{return JSON.parse(localStorage.getItem(DKEY)||'[]');}catch(e){return[];}}
+function setRecs(r){localStorage.setItem(DKEY,JSON.stringify(r));}
+
+function decode(code){
+  code=code.trim();if(!code)return null;
+  if(!code.startsWith('XHS1:'))throw'格式不符（应以 XHS1: 开头）';
+  try{const json=decodeURIComponent(escape(atob(code.slice(5))));const o=JSON.parse(json);
+    if(!o.n||o.s==null)throw 0;return o;}catch(e){throw'成绩码已损坏或不完整';}
+}
+
+document.getElementById('addBtn').onclick=()=>{
+  const raw=document.getElementById('codeInput').value.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+  if(raw.length===0){showMsg('请先粘贴成绩码',false);return;}
+  let recs=getRecs(),ok=0,dup=0,err=0,errs=[];
+  raw.forEach(code=>{
+    try{const o=decode(code);const key=o.n+'|'+o.d;
+      if(recs.some(r=>r.n+'|'+r.d===key)){dup++;return;}
+      recs.push(o);ok++;
+    }catch(e){err++;errs.push(e);}
+  });
+  setRecs(recs);
+  document.getElementById('codeInput').value='';
+  let msg=`成功录入 ${ok} 条`;if(dup)msg+=`，跳过重复 ${dup} 条`;if(err)msg+=`，失败 ${err} 条（${errs[0]}）`;
+  showMsg(msg,err===0);
+  render();
+};
+function showMsg(m,ok){const d=document.getElementById('parseMsg');d.className='parse-msg '+(ok?'parse-ok':'parse-err');d.textContent=m;}
+document.getElementById('clearAll').onclick=()=>{if(confirm('确定清空所有已录入的成绩数据？此操作不可撤销。')){setRecs([]);render();showMsg('已清空全部数据',true);}};
+document.getElementById('exportCsv').onclick=exportCsv;
+
+function modErr(recs,mi){let tot=0,wrong=0;recs.forEach(r=>{const v=r.m&&r.m['m'+mi];if(v){tot+=v[0];wrong+=v[1];}});return tot?wrong/tot:null;}
+
+function render(){
+  const recs=getRecs();const board=document.getElementById('board');
+  if(recs.length===0){board.innerHTML=`<div class="card"><div class="empty"><div class="big">📋</div>还没有录入任何成绩。<br>把学员发来的成绩码粘贴到上方，点「录入」即可生成看板。</div></div>`;return;}
+  // 个人聚合（同一人取最近一次 + 统计场次）
+  const byName={};
+  recs.forEach(r=>{(byName[r.n]=byName[r.n]||[]).push(r);});
+  const people=Object.keys(byName).map(n=>{
+    const list=byName[n].slice().sort((a,b)=>a.d<b.d?1:-1);
+    const latest=list[0];
+    const mErr={};MODULES.forEach((m,i)=>{let t=0,w=0;list.forEach(r=>{const v=r.m&&r.m['m'+i];if(v){t+=v[0];w+=v[1];}});mErr[i]=t?w/t:null;});
+    const weak=MODULES.map((m,i)=>mErr[i]!=null&&mErr[i]>=WEAK?MOD_SHORT[m]:null).filter(Boolean);
+    const avg=Math.round(list.reduce((s,r)=>s+r.s,0)/list.length);
+    return {n,latest:latest.s,avg,attempts:list.length,lastDate:latest.d.replace('T',' '),mErr,weak};
+  }).sort((a,b)=>b.latest-a.latest);
+
+  const totalAttempts=recs.length;
+  const avgScore=Math.round(recs.reduce((s,r)=>s+r.s,0)/recs.length);
+  const teamWeak=MODULES.map((m,i)=>{const e=modErr(recs,i);return e!=null&&e>=WEAK?MOD_SHORT[m]:null;}).filter(Boolean);
+
+  let kpis=`<div class="kpis">
+    <div class="kpi"><div class="v">${people.length}</div><div class="k">参考人数</div></div>
+    <div class="kpi"><div class="v">${totalAttempts}</div><div class="k">考试场次</div></div>
+    <div class="kpi"><div class="v" style="color:${avgScore>=70?'var(--green)':'var(--coral)'}">${avgScore}</div><div class="k">平均分</div></div>
+    <div class="kpi"><div class="v" style="color:${teamWeak.length?'var(--coral)':'var(--green)'}">${teamWeak.length}</div><div class="k">团队薄弱模块</div></div>
+  </div>`;
+
+  // 个人排行表
+  let prows=people.map((p,idx)=>{
+    const weakBadges=p.weak.length?p.weak.map(w=>`<span class="badge weak">${w}</span>`).join(''):'<span class="cell-ok">无明显薄弱</span>';
+    const col=p.latest>=70?'var(--green)':'var(--coral)';
+    return `<tr><td class="rank ${idx<3?'top':''}">${idx+1}</td><td><b>${esc(p.n)}</b></td>
+      <td class="scoreCell" style="color:${col}">${p.latest}</td><td>${p.avg}</td><td>${p.attempts}</td>
+      <td>${weakBadges}</td><td style="color:var(--muted);font-size:12px">${p.lastDate}</td></tr>`;
+  }).join('');
+  let personTab=`<table><thead><tr><th>#</th><th>姓名</th><th>最近分</th><th>均分</th><th>场次</th><th>薄弱模块</th><th>最近考试</th></tr></thead><tbody>${prows}</tbody></table>`;
+
+  // 模块维度表
+  let mrows=MODULES.map((m,i)=>{
+    const e=modErr(recs,i);if(e==null)return '';
+    const pct=Math.round(e*100);const col=e>=WEAK?'var(--coral)':e>=MIDV?'var(--amber)':'var(--green)';
+    const tag=e>=WEAK?'<span class="badge weak">⚠ 团队薄弱</span>':e>=MIDV?'<span style="color:var(--amber)">需关注</span>':'<span class="cell-ok">良好</span>';
+    return `<tr><td><b>${MOD_SHORT[m]}</b><br><span style="font-size:11px;color:var(--muted)">${m}</span></td>
+      <td><span class="mini-bar"><span class="mini-fi" style="width:${pct}%;background:${col}"></span></span>${pct}%</td><td>${tag}</td></tr>`;
+  }).join('');
+  let moduleTab=`<table><thead><tr><th>知识模块</th><th>团队错误率</th><th>评定</th></tr></thead><tbody>${mrows}</tbody></table>
+    <div class="team-weak ${teamWeak.length?'has':'none'}">${teamWeak.length?`<b>团队普遍薄弱：</b>「${teamWeak.join('、')}」全员错误率偏高，建议组织专项讲解并加强该模块出题。`:'团队各模块掌握较均衡，暂无普遍薄弱项。'}</div>`;
+
+  // 雷达图
+  const teamRadar=radarFromErr(MODULES.map((m,i)=>modErr(recs,i)),'团队整体');
+
+  board.innerHTML=`${kpis}
+    <div class="card">
+      <h2><span class="n">◆</span>团队能力雷达</h2>
+      <div class="desc">外圈=掌握好，凹陷=团队薄弱项（基于全部已录入成绩）。</div>
+      <div class="radar-box">${teamRadar}</div>
+    </div>
+    <div class="card">
+      <h2><span class="n">▤</span>数据看板</h2>
+      <div class="tabs">
+        <div class="tab ${view==='person'?'on':''}" onclick="setView('person')">学员排行</div>
+        <div class="tab ${view==='module'?'on':''}" onclick="setView('module')">模块薄弱项</div>
+      </div>
+      ${view==='person'?personTab:moduleTab}
+    </div>`;
+}
+function setView(v){view=v;render();}
+function esc(s){return String(s).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+
+function radarFromErr(errs,title){
+  const valid=errs.map((e,i)=>({e,i})).filter(x=>x.e!=null);
+  const N=valid.length,cx=160,cy=150,R=105;
+  if(N<3)return `<svg width="320" height="70"><text x="160" y="40" text-anchor="middle" fill="#7d8694" font-size="13">模块数不足，雷达图需≥3个模块的数据</text></svg>`;
+  const ang=k=>(-90+k*360/N)*Math.PI/180;
+  let grid='';[0.25,0.5,0.75,1].forEach(g=>{let pts=valid.map((_,k)=>`${cx+Math.cos(ang(k))*R*g},${cy+Math.sin(ang(k))*R*g}`).join(' ');grid+=`<polygon points="${pts}" fill="none" stroke="#d6dce6" stroke-width="1"/>`;});
+  let axes='',labels='';
+  valid.forEach((v,k)=>{const x=cx+Math.cos(ang(k))*R,y=cy+Math.sin(ang(k))*R;axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#d6dce6"/>`;
+    const lx=cx+Math.cos(ang(k))*(R+26),ly=cy+Math.sin(ang(k))*(R+18);const col=v.e>=WEAK?'#e0483d':v.e>=MIDV?'#d99100':'#3f8a5c';
+    labels+=`<text x="${lx}" y="${ly}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${col}">${MOD_SHORT[MODULES[v.i]]}</text>`;});
+  let pts=valid.map((v,k)=>{const m=1-v.e;return `${cx+Math.cos(ang(k))*R*m},${cy+Math.sin(ang(k))*R*m}`;}).join(' ');
+  let dots=valid.map((v,k)=>{const m=1-v.e;return `<circle cx="${cx+Math.cos(ang(k))*R*m}" cy="${cy+Math.sin(ang(k))*R*m}" r="3.5" fill="#2d5fc4"/>`;}).join('');
+  return `<svg width="320" height="310" viewBox="0 0 320 310">${grid}${axes}<polygon points="${pts}" fill="rgba(45,95,196,.16)" stroke="#2d5fc4" stroke-width="2"/>${dots}${labels}</svg>`;
+}
+
+function exportCsv(){
+  const recs=getRecs();if(recs.length===0){toast('暂无数据可导出');return;}
+  let head=['姓名','日期','得分'].concat(MODULES.map(m=>MOD_SHORT[m]+'错误率'));
+  let lines=[head.join(',')];
+  recs.slice().sort((a,b)=>a.n<b.n?-1:1).forEach(r=>{
+    let row=[r.n,r.d.replace('T',' '),r.s];
+    MODULES.forEach((m,i)=>{const v=r.m&&r.m['m'+i];row.push(v?(v[1]/v[0]*100).toFixed(0)+'%':'-');});
+    lines.push(row.join(','));
+  });
+  const blob=new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='全员成绩汇总.csv';a.click();
+  toast('CSV 已导出');
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+render();
+</script>
+</body>
+</html>

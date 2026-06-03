@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小红书优化师考试系统</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Noto+Sans+SC:wght@400;500;700&display=swap');
+:root{
+  --ink:#221a17; --paper:#f7f2ec; --card:#fffdfa; --line:#e3d9cd;
+  --coral:#e0483d; --coral-d:#b5362d; --coral-soft:#fbe4e0;
+  --gold:#c8923a; --green:#3f8a5c; --amber:#d99100; --muted:#8a7d70;
+  --shadow:0 8px 30px rgba(80,40,30,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans SC',sans-serif;background:var(--paper);color:var(--ink);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 12% 8%,rgba(224,72,61,.05),transparent 38%),radial-gradient(circle at 88% 92%,rgba(200,146,58,.06),transparent 40%);
+  min-height:100vh;}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 80px}
+.serif{font-family:'Noto Serif SC',serif}
+header.top{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:6px}
+header.top .logo{width:30px;height:30px;background:var(--coral);border-radius:8px 8px 8px 2px;flex:none;position:relative;align-self:center}
+header.top .logo::after{content:"小";position:absolute;inset:0;color:#fff;font-weight:900;font-size:16px;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif SC',serif}
+header.top h1{font-family:'Noto Serif SC',serif;font-weight:900;font-size:25px;letter-spacing:.5px}
+header.top .ver{margin-left:auto;font-size:12px;color:var(--muted);letter-spacing:1px}
+.sub{font-size:13px;color:var(--muted);margin:8px 0 26px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:var(--shadow);margin-bottom:22px}
+.card h2{font-family:'Noto Serif SC',serif;font-size:19px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+.card h2 .n{width:24px;height:24px;background:var(--ink);color:var(--paper);border-radius:50%;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;font-family:'Noto Sans SC'}
+.card .desc{font-size:13px;color:var(--muted);margin-bottom:18px}
+
+label.fld{display:block;font-size:13px;font-weight:500;margin-bottom:7px;color:var(--ink)}
+select,input[type=text]{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;background:var(--paper);font-family:inherit;color:var(--ink);transition:.18s}
+select:focus,input:focus{outline:none;border-color:var(--coral);background:#fff}
+.row{display:flex;gap:14px;flex-wrap:wrap}
+.row>div{flex:1;min-width:180px}
+
+.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px}
+.chip{padding:8px 15px;border:1.5px solid var(--line);border-radius:30px;font-size:13px;cursor:pointer;background:var(--paper);transition:.15s;user-select:none}
+.chip:hover{border-color:var(--coral)}
+.chip.on{background:var(--coral);color:#fff;border-color:var(--coral)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--coral);color:#fff;border:none;padding:13px 26px;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.18s;box-shadow:0 4px 14px rgba(224,72,61,.3)}
+.btn:hover{background:var(--coral-d);transform:translateY(-1px)}
+.btn:disabled{background:#cdbfb2;box-shadow:none;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;color:var(--coral);box-shadow:none;border:1.5px solid var(--coral)}
+.btn.ghost:hover{background:var(--coral-soft)}
+.btn-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:8px}
+
+.hidden{display:none}
+.progress-wrap{position:sticky;top:0;background:var(--paper);padding:14px 0 12px;z-index:10;margin:-4px 0 14px}
+.pbar{height:7px;background:var(--line);border-radius:5px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--coral),var(--gold));width:0;transition:width .35s}
+.pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:7px}
+
+.q-tags{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+.tag{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--coral-soft);color:var(--coral-d);font-weight:500}
+.tag.lv{background:#ece3f3;color:#6b4e8f}
+.tag.ty{background:#e2efe6;color:var(--green)}
+.q-stem{font-size:17px;font-weight:500;margin-bottom:20px;line-height:1.7}
+.opt{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1.5px solid var(--line);border-radius:11px;margin-bottom:11px;cursor:pointer;transition:.15s;background:var(--paper)}
+.opt:hover{border-color:var(--coral);background:#fff}
+.opt.sel{border-color:var(--coral);background:var(--coral-soft)}
+.opt .mk{width:24px;height:24px;border:1.5px solid var(--muted);border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);transition:.15s}
+.opt.multi .mk{border-radius:6px}
+.opt.sel .mk{background:var(--coral);border-color:var(--coral);color:#fff}
+.opt .tx{font-size:15px;padding-top:1px}
+
+.score-hero{text-align:center;padding:14px 0 6px}
+.score-hero .big{font-family:'Noto Serif SC',serif;font-size:62px;font-weight:900;line-height:1;color:var(--coral)}
+.score-hero .lbl{font-size:13px;color:var(--muted);letter-spacing:2px;margin-top:6px}
+.stat-row{display:flex;gap:14px;margin:22px 0;flex-wrap:wrap}
+.stat{flex:1;min-width:120px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.stat .v{font-size:26px;font-weight:700;font-family:'Noto Serif SC',serif}
+.stat .k{font-size:12px;color:var(--muted);margin-top:3px}
+
+.radar-box{display:flex;justify-content:center;margin:10px 0 6px}
+.mod-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
+.mod-table th{background:var(--ink);color:var(--paper);padding:10px 12px;text-align:left;font-weight:500;font-size:13px}
+.mod-table th:first-child{border-radius:8px 0 0 0}.mod-table th:last-child{border-radius:0 8px 0 0}
+.mod-table td{padding:11px 12px;border-bottom:1px solid var(--line)}
+.mod-table tr:last-child td{border-bottom:none}
+.bar-cell{position:relative}
+.bar-bg{background:var(--line);border-radius:5px;height:9px;overflow:hidden;width:110px;display:inline-block;vertical-align:middle;margin-right:9px}
+.bar-fi{height:100%;border-radius:5px}
+.badge{font-size:11px;padding:3px 11px;border-radius:20px;font-weight:700}
+.badge.weak{background:var(--coral-soft);color:var(--coral-d)}
+.badge.mid{background:#fbefd4;color:var(--amber)}
+.badge.ok{background:#e2efe6;color:var(--green)}
+
+.review h3{font-family:'Noto Serif SC',serif;font-size:17px;margin:24px 0 14px;padding-bottom:8px;border-bottom:1.5px solid var(--ink)}
+.rv-item{border:1px solid var(--line);border-left:4px solid var(--coral);border-radius:10px;padding:16px;margin-bottom:13px;background:var(--paper)}
+.rv-q{font-size:15px;font-weight:500;margin-bottom:10px}
+.rv-line{font-size:13.5px;margin:5px 0}
+.rv-line .k{color:var(--muted);display:inline-block;min-width:74px}
+.rv-yours{color:var(--coral-d);font-weight:700}
+.rv-correct{color:var(--green);font-weight:700}
+.rv-exp{font-size:13px;color:var(--muted);background:#fff;border-radius:8px;padding:11px 13px;margin-top:9px;line-height:1.6}
+.empty-good{text-align:center;color:var(--green);padding:20px;font-size:15px}
+
+.footer-note{font-size:12px;color:var(--muted);text-align:center;margin-top:30px;line-height:1.7}
+.hist{font-size:13px}
+.hist-item{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line)}
+.hist-item:last-child{border:none}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--paper);padding:13px 22px;border-radius:30px;font-size:14px;opacity:0;transition:.3s;z-index:99}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+@media(max-width:560px){.wrap{padding:20px 14px 60px}header.top h1{font-size:20px}.score-hero .big{font-size:48px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="logo"></span>
+    <h1 class="serif">优化师考试系统</h1>
+    <span class="ver">小红书投放 · V1.0</span>
+  </header>
+  <div class="sub">理解投放原理 · 掌握场景优化 · 自动识别知识薄弱项</div>
+
+  <!-- ============ 配置区 ============ -->
+  <div id="setup">
+    <div class="card">
+      <h2><span class="n">1</span>考生与考试设置</h2>
+      <div class="desc">选择考生、出题范围与数量，开始本场考试。考试记录会保存在本机浏览器。</div>
+      <div class="row">
+        <div>
+          <label class="fld">考生姓名</label>
+          <input type="text" id="stuName" placeholder="输入或选择姓名" list="stuList">
+          <datalist id="stuList"><option>张三</option><option>李四</option><option>王五</option><option>赵六</option><option>孙七</option></datalist>
+        </div>
+        <div>
+          <label class="fld">题目数量</label>
+          <select id="qCount">
+            <option value="8">每日小测（8 题）</option>
+            <option value="15">每周综合（15 题）</option>
+            <option value="42">全题库（42 题）</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:18px">
+        <label class="fld">出题模块（不选=全部六大模块）</label>
+        <div class="chips" id="modChips"></div>
+      </div>
+      <div style="margin-top:18px">
+        <label class="fld">出题模式</label>
+        <div class="chips" id="modeChips">
+          <div class="chip on" data-mode="new" id="modeNew">每天做新题（优先没做过的）</div>
+          <div class="chip" data-mode="any" id="modeAny">不限（可重复抽题）</div>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:24px">
+        <button class="btn" id="startBtn">开始考试 →</button>
+        <span id="poolInfo" style="font-size:13px;color:var(--muted)"></span>
+      </div>
+      <div id="seenInfo" style="font-size:12px;color:var(--muted);margin-top:10px"></div>
+    </div>
+
+    <div class="card" id="importCard">
+      <h2><span class="n">⇪</span>题库管理</h2>
+      <div class="desc">当前题库 <b id="qbCount">0</b> 题。可导入自己维护的题库 CSV 文件来增补题目（用配套的「加题模板」按格式填写后导出 CSV）。导入的题库保存在本机浏览器。</div>
+      <div class="btn-row">
+        <button class="btn ghost" id="importBtn" style="font-size:14px">📂 导入题库 CSV</button>
+        <button class="btn ghost" id="resetQbBtn" style="font-size:13px;padding:8px 16px">恢复内置题库</button>
+        <input type="file" id="csvFile" accept=".csv,.txt" style="display:none">
+      </div>
+      <div id="importMsg" style="font-size:13px;margin-top:10px"></div>
+    </div>
+
+    <div class="card" id="histCard">
+      <h2><span class="n">★</span>历史成绩</h2>
+      <div class="desc">本机已完成的考试记录，可用于跟踪进步与重测验证。</div>
+      <div class="hist" id="histList"></div>
+      <div class="btn-row"><button class="btn ghost" id="clearHist" style="font-size:13px;padding:8px 16px">清空记录</button></div>
+    </div>
+  </div>
+
+  <!-- ============ 答题区 ============ -->
+  <div id="quiz" class="hidden">
+    <div class="progress-wrap">
+      <div class="pbar"><div class="pfill" id="pfill"></div></div>
+      <div class="pmeta"><span id="pnum"></span><span id="pname"></span></div>
+    </div>
+    <div class="card">
+      <div class="q-tags" id="qtags"></div>
+      <div class="q-stem" id="qstem"></div>
+      <div id="qopts"></div>
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn ghost" id="prevBtn">← 上一题</button>
+        <button class="btn" id="nextBtn">下一题 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 结果区 ============ -->
+  <div id="result" class="hidden"></div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const QDATA_BUILTIN = [{"id": "A-01", "m": "A平台与流量原理", "tag": "内容分发逻辑", "lv": "L1", "t": "single", "d": "易", "stem": "小红书的内容分发，最核心依据的是哪一类信号？", "opts": ["A. 仅看发布者的粉丝数量", "B. 笔记的互动与转化等综合表现（如点击、互动、停留）", "C. 发布的时间越早越好", "D. 笔记字数越多越好"], "ans": "B", "exp": "小红书以笔记的综合表现进行赛马式分发，互动好、转化好的内容会获得更多流量推荐，而非单纯依赖粉丝数或发布时间。"}, {"id": "A-02", "m": "A平台与流量原理", "tag": "信息流vs搜索", "lv": "L1", "t": "single", "d": "易", "stem": "用户主动在搜索框输入关键词后看到的广告，属于哪种流量？", "opts": ["A. 信息流流量", "B. 搜索流量", "C. 开屏流量", "D. 私信流量"], "ans": "B", "exp": "用户主动搜索关键词触发的是搜索流量，意图明确、转化通常更高；信息流则是用户被动刷到的推荐流量。"}, {"id": "A-03", "m": "A平台与流量原理", "tag": "信息流vs搜索", "lv": "L2", "t": "single", "d": "中", "stem": "某客户希望承接「已经对品类有明确需求、主动搜索」的用户，更应侧重投放？", "opts": ["A. 信息流", "B. 搜索广告", "C. 开屏广告", "D. 仅做自然笔记"], "ans": "B", "exp": "主动搜索代表明确需求，搜索广告能精准承接这部分高意图流量。信息流更适合做兴趣激发与种草。"}, {"id": "A-04", "m": "A平台与流量原理", "tag": "笔记与商销关系", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：在小红书，优质的内容笔记是广告投放效果的基础，内容差时单纯加预算也很难有好效果。", "opts": [], "ans": true, "exp": "小红书是内容驱动平台，素材/笔记质量是效果地基。内容不行时，加预算往往只是更快地花钱，难以换来好转化。"}, {"id": "A-05", "m": "A平台与流量原理", "tag": "流量赛马", "lv": "L2", "t": "multi", "d": "中", "stem": "关于小红书的「赛马机制」，以下说法正确的有？（多选）", "opts": ["A. 新笔记会先小范围投放测试表现", "B. 表现好的笔记会被推给更多人", "C. 表现差的笔记会逐步减少推荐", "D. 只要付费就一定能持续放量，与内容无关"], "ans": ["A", "B", "C"], "exp": "赛马机制下，系统用小流量测试笔记表现，好的加推、差的降权；付费能助推，但不能脱离内容表现持续放量，D 错误。"}, {"id": "A-06", "m": "A平台与流量原理", "tag": "内容分发逻辑", "lv": "L2", "t": "single", "d": "中", "stem": "同样的预算下，一条点击率（CTR）明显更高的笔记，通常会？", "opts": ["A. 获得更低的流量", "B. 在赛马中更有优势，更容易拿到量", "C. 与点击率无关", "D. 被平台限流"], "ans": "B", "exp": "CTR 是赛马的重要信号之一，点击率高说明内容吸引人，系统更愿意分配流量，跑量也更顺。"}, {"id": "A-07", "m": "A平台与流量原理", "tag": "平台特性", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：小红书用户以「种草—决策」心智为主，因此内容的真实感和实用性往往比硬广更有效。", "opts": [], "ans": true, "exp": "小红书用户习惯在平台做消费决策参考，偏好真实、有用的内容，过度硬广反而容易被划走，转化更差。"}, {"id": "A-08", "m": "A平台与流量原理", "tag": "转化链路", "lv": "L2", "t": "single", "d": "中", "stem": "在小红书投放中，「曝光→点击→进入落地页/笔记→产生转化」描述的是？", "opts": ["A. 出价方式", "B. 转化漏斗/链路", "C. 人群定向", "D. 创意类型"], "ans": "B", "exp": "这是典型的转化漏斗，每一环都有流失，诊断效果时需逐层看哪一环转化率异常。"}, {"id": "B-01", "m": "B账户与计划搭建", "tag": "账户结构", "lv": "L1", "t": "single", "d": "易", "stem": "广告账户中，通常的层级结构由大到小是？", "opts": ["A. 创意 → 单元/计划 → 账户", "B. 账户 → 计划/单元 → 创意", "C. 计划 → 账户 → 创意", "D. 创意 → 账户 → 计划"], "ans": "B", "exp": "账户结构自上而下为：账户 → 推广计划/单元 → 创意。预算、定向、出价等设置分布在不同层级。"}, {"id": "B-02", "m": "B账户与计划搭建", "tag": "推广目标", "lv": "L2", "t": "single", "d": "中", "stem": "客户的核心诉求是「让更多人在站内私信咨询」，推广目标最应选择？", "opts": ["A. 提升笔记曝光量", "B. 私信/留资类转化目标", "C. 涨粉", "D. 视频完播"], "ans": "B", "exp": "推广目标应与业务目标对齐。要私信咨询，就选私信/留资类转化目标，系统才会朝该转化优化。"}, {"id": "B-03", "m": "B账户与计划搭建", "tag": "预算分配", "lv": "L2", "t": "multi", "d": "中", "stem": "为新搭建的计划设置预算时，较稳妥的做法包括？（多选）", "opts": ["A. 给足够预算空间，避免频繁触顶限制跑量", "B. 一上来就把预算压到极低观察", "C. 结合目标成本与跑量需求设置", "D. 测试期可适当宽松，跑稳后再精细控制"], "ans": ["A", "C", "D"], "exp": "预算过低会限制系统探索与跑量，B 不利于冷启动；合理做法是给足空间、结合成本与跑量需求、测试期宽松跑稳后再优化。"}, {"id": "B-04", "m": "B账户与计划搭建", "tag": "冷启动", "lv": "L2", "t": "single", "d": "中", "stem": "关于新计划的「冷启动期」，正确的理解是？", "opts": ["A. 系统正在学习人群，数据未稳定，不宜频繁大改", "B. 应每隔十分钟调整一次出价", "C. 冷启动期数据最准，可立即下结论", "D. 冷启动期可随意关停重开"], "ans": "A", "exp": "冷启动期系统在积累转化、学习人群，数据波动大。频繁大改会打断学习，应给计划一定稳定运行的时间再判断。"}, {"id": "B-05", "m": "B账户与计划搭建", "tag": "计划搭建", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：把多个差异很大的人群、素材全堆在同一个计划里，更便于精准分析每个变量的效果。", "opts": [], "ans": false, "exp": "变量混在一起无法归因。应控制变量、分计划测试，才能看清是哪个人群或素材带来了好/坏的效果。"}, {"id": "B-06", "m": "B账户与计划搭建", "tag": "测试方法", "lv": "L2", "t": "single", "d": "中", "stem": "想判断两版素材哪个更好，最合理的测试方式是？", "opts": ["A. 两版素材放不同计划、其余条件尽量一致进行对比", "B. 同一计划里随便混着投", "C. 凭感觉选一个", "D. 看哪个素材做得更花哨"], "ans": "A", "exp": "A/B 测试要控制变量：除被测素材外其余条件尽量一致，才能把效果差异归因到素材本身。"}, {"id": "C-01", "m": "C定向与人群", "tag": "定向方式", "lv": "L1", "t": "single", "d": "易", "stem": "以下哪项属于常见的人群定向维度？", "opts": ["A. 年龄、性别、地域、兴趣", "B. 笔记的字体大小", "C. 服务器所在城市", "D. 广告的播放音量"], "ans": "A", "exp": "人群定向通常基于年龄、性别、地域、兴趣、行为等用户维度，用以圈定目标受众。"}, {"id": "C-02", "m": "C定向与人群", "tag": "智能vs手动", "lv": "L2", "t": "single", "d": "中", "stem": "新手在不确定人群该如何圈选、且想让系统帮忙探索时，较合适先用？", "opts": ["A. 极窄的手动定向", "B. 智能/自动定向（系统模型找人）", "C. 完全不设任何目标", "D. 只投自己一个账号"], "ans": "B", "exp": "不确定人群时，智能定向能让系统基于转化目标自动探索合适人群，适合冷启动与新手；待数据积累后再考虑精细化手动定向。"}, {"id": "C-03", "m": "C定向与人群", "tag": "定向宽窄", "lv": "L3", "t": "multi", "d": "难", "stem": "一个计划「定向过窄」可能带来的问题有？（多选）", "opts": ["A. 可触达人群太少，难以跑量", "B. 探索空间小，系统难找到更优人群", "C. 容易因竞争集中导致成本偏高", "D. 一定会让转化率更高，没有任何缺点"], "ans": ["A", "B", "C"], "exp": "定向过窄会限制可触达规模、压缩系统探索空间，并可能因争抢同一小撮人推高成本；D 把窄定向绝对化，错误。"}, {"id": "C-04", "m": "C定向与人群", "tag": "人群扩展", "lv": "L2", "t": "single", "d": "中", "stem": "「人群扩展（lookalike/相似人群）」的核心思路是？", "opts": ["A. 随机找一批人", "B. 基于已转化的种子人群，找特征相似的潜在用户", "C. 只投已经买过的人", "D. 把所有人都投一遍"], "ans": "B", "exp": "相似人群扩展是用已转化的优质用户作为种子，由模型寻找特征相似的新用户，从而在保持精准的同时扩大规模。"}, {"id": "C-05", "m": "C定向与人群", "tag": "定向方式", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：定向设置得越窄越精准，就一定能带来越好的整体投放效果。", "opts": [], "ans": false, "exp": "定向不是越窄越好。过窄会限制跑量、推高成本、压缩系统探索；需在精准与规模之间平衡。"}, {"id": "C-06", "m": "C定向与人群", "tag": "人群诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "某计划前期跑得不错，几天后消耗逐渐下滑，怀疑「人群跑窄」。以下哪些排查/动作是合理的？（多选）", "opts": ["A. 查看人群覆盖/受众规模是否在收窄", "B. 适当放宽定向或开启人群扩展", "C. 检查是否与其他计划争抢同一人群", "D. 直接删除账户重新注册"], "ans": ["A", "B", "C"], "exp": "怀疑跑窄应查受众规模、考虑放宽定向或扩展人群、排查内部计划互相竞争；D 与问题无关且代价极大，错误。"}, {"id": "C-07", "m": "C定向与人群", "tag": "定向冲突", "lv": "L2", "t": "single", "d": "中", "stem": "同一账户下多个计划定向高度重叠，最可能产生的问题是？", "opts": ["A. 计划之间内部竞争，互相抬高成本", "B. 一定会让总转化翻倍", "C. 完全没有任何影响", "D. 系统会自动合并成一个计划"], "ans": "A", "exp": "定向高度重叠会导致同账户计划争抢同一批人，形成内部竞争，推高成本、互相抢量。应做人群区隔。"}, {"id": "D-01", "m": "D出价与成本控制", "tag": "oCPM逻辑", "lv": "L1", "t": "single", "d": "易", "stem": "oCPM 出价的本质是？", "opts": ["A. 按点击付费，系统不优化转化", "B. 你设定目标转化成本，系统按预期转化优化展现并按展现扣费", "C. 按千次曝光固定收费，与转化无关", "D. 由人工逐个挑选受众出价"], "ans": "B", "exp": "oCPM 是「优化的千次展现出价」：优化师给目标转化成本，系统用模型找更可能转化的人，扣费仍按展现计算。"}, {"id": "D-02", "m": "D出价与成本控制", "tag": "出价与跑量", "lv": "L2", "t": "single", "d": "中", "stem": "在其他条件不变时，适当提高出价，通常会？", "opts": ["A. 竞争力上升，更容易拿量，但成本可能上升", "B. 一定会让成本下降", "C. 与跑量完全无关", "D. 会让账户被封"], "ans": "A", "exp": "出价是竞争力的体现。提价通常更容易赢得展现、更好跑量，但单次成本往往随之上升，需权衡量与成本。"}, {"id": "D-03", "m": "D出价与成本控制", "tag": "调价节奏", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：出价应该一次性大幅调整，并且越频繁调整越好。", "opts": [], "ans": false, "exp": "大幅、频繁调价会打断系统学习、造成成本剧烈波动。应小步调整（如每次 5%–10%）并观察一段时间再决定。"}, {"id": "D-04", "m": "D出价与成本控制", "tag": "成本诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "某计划「转化成本明显高于目标」，以下哪些是合理的排查方向？（多选）", "opts": ["A. 检查定向是否过窄或人群质量差", "B. 检查素材点击率是否偏低拉高了获客成本", "C. 检查落地页/承接转化率是否过低", "D. 立刻把预算清零就能降低成本"], "ans": ["A", "B", "C"], "exp": "成本偏高需沿链路排查：人群是否精准、素材点击是否高效、落地承接是否流畅；D 清零预算只是停投，不解决成本结构问题。"}, {"id": "D-05", "m": "D出价与成本控制", "tag": "不跑量诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "一个计划「几乎不消耗、不跑量」，可能的原因包括？（多选）", "opts": ["A. 出价相对市场过低，缺乏竞争力", "B. 定向过窄，可触达人群太少", "C. 预算设置过低很快触顶", "D. 素材审核未通过或受限"], "ans": ["A", "B", "C", "D"], "exp": "不跑量是新手高频问题，常见原因即出价偏低、定向过窄、预算过低触顶、素材未过审，需逐项排查。"}, {"id": "D-06", "m": "D出价与成本控制", "tag": "量大成本高", "lv": "L3", "t": "multi", "d": "难", "stem": "某计划「量很大但成本明显超标」，较合理的优化动作有？（多选）", "opts": ["A. 适当下调出价以压成本", "B. 优化或更换转化率更高的素材/落地页", "C. 收紧人群，聚焦更高质量受众", "D. 进一步大幅提高出价"], "ans": ["A", "B", "C"], "exp": "量大但成本高，方向是「在保住量的前提下提效降本」：降价、提升转化效率、聚焦优质人群；D 再提价会让成本更高，错误。"}, {"id": "D-07", "m": "D出价与成本控制", "tag": "出价方式选择", "lv": "L2", "t": "single", "d": "中", "stem": "客户最关心「每个表单/私信的获取成本可控」，更适合的出价思路是？", "opts": ["A. 以目标转化成本为导向的 oCPM 出价", "B. 只按曝光固定付费、不管转化", "C. 完全不设目标随便投", "D. 按笔记字数付费"], "ans": "A", "exp": "关注单个转化成本可控时，应选以目标转化成本为导向的 oCPM，让系统围绕该成本目标优化。"}, {"id": "D-08", "m": "D出价与成本控制", "tag": "成本波动", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：计划在冷启动期成本有一定波动是正常现象，不应因一两个小时的波动就大幅调价。", "opts": [], "ans": true, "exp": "冷启动期数据样本少、波动大属正常。应观察更长周期、积累足够转化后再判断，避免被短期波动带偏。"}, {"id": "E-01", "m": "E创意与素材", "tag": "笔记类型", "lv": "L1", "t": "single", "d": "易", "stem": "小红书常见的内容形式主要包括？", "opts": ["A. 图文笔记与视频笔记", "B. 只有纯文字", "C. 只有直播", "D. 只有外链网页"], "ans": "A", "exp": "小红书以图文笔记和视频笔记为主要内容形式，投放素材也主要围绕这两类展开。"}, {"id": "E-02", "m": "E创意与素材", "tag": "爆文逻辑", "lv": "L2", "t": "multi", "d": "中", "stem": "一条容易「爆」的小红书笔记，通常具备哪些特征？（多选）", "opts": ["A. 封面/首图抓人，点击欲强", "B. 标题戳中需求或痛点", "C. 内容真实、有用、有代入感", "D. 全篇硬广、反复刷屏品牌名"], "ans": ["A", "B", "C"], "exp": "爆文通常封面吸睛、标题戳需求、内容真实有用；D 的硬广刷屏违背平台种草心智，容易被划走，效果差。"}, {"id": "E-03", "m": "E创意与素材", "tag": "素材衰退", "lv": "L2", "t": "single", "d": "中", "stem": "「素材衰退」一般指？", "opts": ["A. 素材文件损坏打不开", "B. 同一素材投放久了，用户看腻，点击率/转化下降", "C. 素材颜色变淡", "D. 素材被平台永久删除"], "ans": "B", "exp": "素材衰退指同一素材长期投放后用户产生疲劳，CTR 和转化逐步下滑，需要及时补充新素材接力。"}, {"id": "E-04", "m": "E创意与素材", "tag": "素材衰退", "lv": "L3", "t": "multi", "d": "难", "stem": "怀疑某计划效果下滑是「素材衰退」导致，可采取的合理动作有？（多选）", "opts": ["A. 观察 CTR 是否随时间持续走低", "B. 储备并上新一批素材进行接替", "C. 通过 A/B 测试找出新的潜力素材", "D. 把所有历史素材永久删除即可"], "ans": ["A", "B", "C"], "exp": "应对衰退：先用 CTR 趋势确认，再上新素材接力、用 A/B 测试筛选潜力素材；D 删除历史素材既无必要也不解决问题。"}, {"id": "E-05", "m": "E创意与素材", "tag": "AB测试", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：做素材 A/B 测试时，应尽量一次只改动一个变量，便于判断到底是什么带来了效果差异。", "opts": [], "ans": true, "exp": "A/B 测试的核心是控制变量。一次只改一个变量，才能把效果差异准确归因，否则无法判断是哪项改动起了作用。"}, {"id": "E-06", "m": "E创意与素材", "tag": "创意优化", "lv": "L2", "t": "single", "d": "中", "stem": "发现某素材点击率高但转化很低，最可能的问题在于？", "opts": ["A. 素材成功吸引点击，但落地承接或人群匹配出了问题", "B. 素材完全没人看", "C. 一定是出价太低", "D. 与转化毫无关系"], "ans": "A", "exp": "点击高说明素材吸引力没问题，转化低更可能出在落地页承接、产品匹配或人群质量上，应往漏斗下游排查。"}, {"id": "F-01", "m": "F数据诊断与优化", "tag": "核心指标", "lv": "L1", "t": "single", "d": "易", "stem": "CTR（点击率）的含义是？", "opts": ["A. 点击数 ÷ 曝光数", "B. 转化数 ÷ 点击数", "C. 消耗 ÷ 转化数", "D. 曝光数 ÷ 粉丝数"], "ans": "A", "exp": "CTR = 点击 ÷ 曝光，衡量素材吸引用户点击的能力，是判断创意优劣的核心指标之一。"}, {"id": "F-02", "m": "F数据诊断与优化", "tag": "核心指标", "lv": "L1", "t": "single", "d": "易", "stem": "转化率（CVR）通常指？", "opts": ["A. 点击 ÷ 曝光", "B. 转化数 ÷ 点击数", "C. 消耗 ÷ 曝光", "D. 粉丝 ÷ 转化"], "ans": "B", "exp": "CVR = 转化 ÷ 点击，衡量点击进来的用户最终完成转化的比例，反映落地承接与人群匹配质量。"}, {"id": "F-03", "m": "F数据诊断与优化", "tag": "漏斗诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "一个计划「曝光和点击都正常，但转化数很少」，应重点排查哪些环节？（多选）", "opts": ["A. 落地页/承接页面体验与加载", "B. 转化目标或转化路径是否设置正确", "C. 人群是否精准（点进来的是否是目标客户）", "D. 一定是曝光不够，加曝光就行"], "ans": ["A", "B", "C"], "exp": "曝光点击正常说明上游没问题，转化少要查下游：落地承接、转化路径设置、人群精准度；D 与现象矛盾，错误。"}, {"id": "F-04", "m": "F数据诊断与优化", "tag": "消耗骤降", "lv": "L3", "t": "multi", "d": "难", "stem": "某计划稳定跑量 3 天后，第 4 天消耗骤降至原来 1/3、成本上升 50%，近期未做调整。合理的排查方向有？（多选）", "opts": ["A. 查看 CTR 是否下降，判断素材是否衰退", "B. 查看人群覆盖与竞价环境，判断是否人群跑窄或竞争加剧", "C. 对比同期建议出价，判断出价是否相对市场偏低", "D. 直接大幅提预算即可恢复，无需排查"], "ans": ["A", "B", "C"], "exp": "消耗骤降常由素材衰退、人群变窄/竞争加剧、出价相对偏低导致，需逐一排查；D 盲目提预算不解决根因。"}, {"id": "F-05", "m": "F数据诊断与优化", "tag": "指标关系", "lv": "L2", "t": "single", "d": "中", "stem": "其他不变时，CTR 提升通常会对获客带来什么影响？", "opts": ["A. 同等曝光下点击更多，往往有助于降低单次获客成本", "B. 必然导致成本上升", "C. 对成本毫无影响", "D. 会让曝光直接归零"], "ans": "A", "exp": "CTR 提升意味着同等曝光带来更多点击，在转化率不变时单位获客成本通常下降，也更利于赛马拿量。"}, {"id": "F-06", "m": "F数据诊断与优化", "tag": "优化思路", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：诊断投放问题时，按「曝光→点击→转化」漏斗逐层定位异常环节，比凭感觉乱调更有效。", "opts": [], "ans": true, "exp": "结构化的漏斗诊断能快速定位是上游（拿量/素材）还是下游（承接/人群）出问题，避免盲目调整，是优化师的核心方法论。"}, {"id": "F-07", "m": "F数据诊断与优化", "tag": "综合诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "判断一个计划「整体健康、值得加量」时，可综合参考哪些信号？（多选）", "opts": ["A. 转化成本稳定且在目标范围内", "B. CTR、CVR 表现正常无明显下滑", "C. 人群覆盖仍有空间、未明显跑窄", "D. 只要还在消耗就一定健康"], "ans": ["A", "B", "C"], "exp": "判断是否值得加量要看成本稳定、链路指标正常、人群仍有空间等综合信号；D 把「在消耗」等同健康，过于片面。"}, {"id": "A-09", "m": "A平台与流量原理", "tag": "搜索流量", "lv": "L1", "t": "single", "d": "易", "stem": "在小红书，用户搜索某个关键词时，相关的优质笔记更容易获得展现，这体现了？", "opts": ["A. 内容与搜索意图的匹配度很重要", "B. 粉丝越多展现越多", "C. 发布越早越靠前", "D. 字数越多越好"], "ans": "A", "exp": "搜索场景下，内容与用户搜索意图的相关性是关键，匹配度高的笔记更易被展现给搜索用户。"}, {"id": "A-10", "m": "A平台与流量原理", "tag": "流量来源", "lv": "L2", "t": "multi", "d": "中", "stem": "小红书一条笔记的流量，通常可能来自哪些来源？（多选）", "opts": ["A. 信息流推荐", "B. 搜索结果", "C. 关注页/粉丝", "D. 话题/标签页"], "ans": ["A", "B", "C", "D"], "exp": "笔记流量来源多元：推荐信息流、搜索、关注页、话题标签页等都可能带来流量，投放与运营时需综合考虑。"}, {"id": "A-11", "m": "A平台与流量原理", "tag": "平台心智", "lv": "L2", "t": "single", "d": "中", "stem": "相比纯曝光型平台，小红书更强调？", "opts": ["A. 内容种草与消费决策影响", "B. 单纯比谁声音大", "C. 弹窗广告", "D. 强制开屏"], "ans": "A", "exp": "小红书的核心价值在于影响用户的种草与消费决策，内容的说服力和真实性尤为重要。"}, {"id": "A-12", "m": "A平台与流量原理", "tag": "内容分发逻辑", "lv": "L3", "t": "multi", "d": "难", "stem": "一条笔记「曝光起量很慢」，从分发机制角度可排查哪些方面？（多选）", "opts": ["A. 首图/标题点击率是否过低，影响赛马加推", "B. 内容是否触发限流（如违规、过度营销）", "C. 是否冷启动期、样本还不足", "D. 与笔记的发布字体颜色有关"], "ans": ["A", "B", "C"], "exp": "起量慢可从点击率、是否限流、是否仍在冷启动等机制角度排查；D 字体颜色与分发无关。"}, {"id": "A-13", "m": "A平台与流量原理", "tag": "信息流vs搜索", "lv": "L2", "t": "single", "d": "中", "stem": "做「新品牌冷启动、用户还没认知」时，更适合先侧重？", "opts": ["A. 搜索广告（等用户来搜）", "B. 信息流（主动触达、激发兴趣种草）", "C. 完全不投", "D. 只发纯文字"], "ans": "B", "exp": "新品牌用户尚无搜索意图，应先用信息流主动触达激发兴趣；待有了认知和搜索量，再加强搜索承接。"}, {"id": "A-14", "m": "A平台与流量原理", "tag": "互动信号", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：点赞、收藏、评论等互动数据，是平台判断笔记内容质量的重要参考。", "opts": [], "ans": true, "exp": "互动数据反映用户对内容的认可度，是平台评估内容质量、决定是否加推的重要信号之一。"}, {"id": "A-15", "m": "A平台与流量原理", "tag": "流量赛马", "lv": "L2", "t": "single", "d": "中", "stem": "两条同主题笔记同时投放，A 的收藏率明显更高，通常意味着？", "opts": ["A. A 的内容更被认可，更可能获得加推", "B. 收藏率与流量无关", "C. A 一定会被限流", "D. B 更好"], "ans": "A", "exp": "收藏率高说明内容对用户有价值、值得留存，是正向信号，赛马中更可能获得流量倾斜。"}, {"id": "A-16", "m": "A平台与流量原理", "tag": "平台特性", "lv": "L3", "t": "multi", "d": "难", "stem": "为什么在小红书「硬广刷屏」往往效果差？可能的原因有？（多选）", "opts": ["A. 与平台种草、真实分享的心智不符", "B. 用户容易直接划走，点击/互动差", "C. 互动差会拖累赛马表现、难获量", "D. 因为硬广一定会被封号"], "ans": ["A", "B", "C"], "exp": "硬广违背平台心智、易被划走、互动差进而影响赛马，导致效果差；D「一定封号」过于绝对。"}, {"id": "B-07", "m": "B账户与计划搭建", "tag": "推广目标", "lv": "L1", "t": "single", "d": "易", "stem": "选择推广目标时，最重要的原则是？", "opts": ["A. 与真实业务目标对齐", "B. 随便选一个", "C. 永远只选曝光", "D. 选最贵的"], "ans": "A", "exp": "推广目标决定系统朝什么方向优化，必须与真实业务目标（如留资、成交、涨粉）对齐。"}, {"id": "B-08", "m": "B账户与计划搭建", "tag": "预算分配", "lv": "L2", "t": "single", "d": "中", "stem": "测试多个人群方向时，预算分配较合理的做法是？", "opts": ["A. 给每个测试方向相对均衡的预算，公平对比", "B. 全压在一个方向", "C. 预算全设为0", "D. 看心情"], "ans": "A", "exp": "测试期应让各方向获得相对均衡的预算与曝光，才能公平比较出哪个人群方向更优。"}, {"id": "B-09", "m": "B账户与计划搭建", "tag": "账户结构", "lv": "L2", "t": "multi", "d": "中", "stem": "合理的账户结构搭建，有助于？（多选）", "opts": ["A. 清晰区分不同人群/素材，便于归因", "B. 控制不同计划的预算与出价", "C. 避免计划间过度内部竞争", "D. 让账户一定不会有任何成本波动"], "ans": ["A", "B", "C"], "exp": "清晰的结构便于归因、独立控制和减少内部竞争；D 成本波动受多因素影响，结构无法「保证不波动」。"}, {"id": "B-10", "m": "B账户与计划搭建", "tag": "冷启动", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：计划刚上线转化很少就立即判定它没用并关停，是不妥的做法。", "opts": [], "ans": true, "exp": "冷启动期系统尚在学习、转化样本少，过早关停会浪费学习积累，应给予合理观察期再判断。"}, {"id": "B-11", "m": "B账户与计划搭建", "tag": "测试方法", "lv": "L3", "t": "multi", "d": "难", "stem": "搭建 A/B 测试计划时，为保证结论可靠，应注意？（多选）", "opts": ["A. 每次只改一个变量（如仅换素材）", "B. 给足够的曝光/转化样本量再下结论", "C. 对照组与实验组其他条件尽量一致", "D. 看哪个名字起得好听就选哪个"], "ans": ["A", "B", "C"], "exp": "可靠的 A/B 测试要控制单一变量、积累足够样本、保持其他条件一致；D 与效果无关。"}, {"id": "B-12", "m": "B账户与计划搭建", "tag": "预算节奏", "lv": "L2", "t": "single", "d": "中", "stem": "计划跑得很好、成本达标时，想放量较稳妥的做法是？", "opts": ["A. 小幅逐步提高预算，观察成本是否稳定", "B. 一次性把预算翻 10 倍", "C. 立刻关停", "D. 把出价归零"], "ans": "A", "exp": "放量应循序渐进，小幅提预算并观察成本稳定性，避免大幅调整打断模型、造成成本飙升。"}, {"id": "B-13", "m": "B账户与计划搭建", "tag": "账户结构", "lv": "L1", "t": "single", "d": "易", "stem": "预算通常可以在哪个层级进行设置？", "opts": ["A. 计划/单元层级", "B. 只能在创意上", "C. 只能在评论区", "D. 无法设置"], "ans": "A", "exp": "预算一般在计划/推广单元层级设置，用于控制该计划每日或总的花费上限。"}, {"id": "B-14", "m": "B账户与计划搭建", "tag": "目标选择", "lv": "L3", "t": "multi", "d": "难", "stem": "客户既想要曝光声量、又想要私信留资，搭建账户时较合理的思路是？（多选）", "opts": ["A. 用不同计划分别承接「声量」和「留资」两类目标", "B. 分别设置对应的推广目标", "C. 便于各自评估效果与分配预算", "D. 把两个目标混在一个计划里一起优化最好"], "ans": ["A", "B", "C"], "exp": "目标不同应分计划承接、各设对应推广目标，便于独立优化与评估；D 混在一起会干扰系统优化方向。"}, {"id": "C-08", "m": "C定向与人群", "tag": "定向方式", "lv": "L1", "t": "single", "d": "易", "stem": "「地域定向」的作用是？", "opts": ["A. 限定广告主要投放给特定地区的用户", "B. 限定广告字体", "C. 限定发布时间", "D. 与人群无关"], "ans": "A", "exp": "地域定向用于把广告集中投放到目标地区用户，适合有地域属性的业务（如本地门店、区域配送）。"}, {"id": "C-09", "m": "C定向与人群", "tag": "智能vs手动", "lv": "L2", "t": "single", "d": "中", "stem": "随着计划转化数据积累，关于定向的合理演进是？", "opts": ["A. 可从智能探索逐步过渡到更精细的人群优化", "B. 永远只用最窄定向", "C. 数据越多越要乱改", "D. 定向无需调整"], "ans": "A", "exp": "前期用智能定向探索，积累数据后可基于表现做更精细的人群优化，是常见的演进路径。"}, {"id": "C-10", "m": "C定向与人群", "tag": "人群扩展", "lv": "L1", "t": "judge", "d": "易", "stem": "判断：相似人群扩展的效果，很大程度上取决于种子人群的质量。", "opts": [], "ans": true, "exp": "种子人群质量决定了模型「找相似」的方向，种子越精准优质，扩展出的相似人群质量通常越高。"}, {"id": "C-11", "m": "C定向与人群", "tag": "定向冲突", "lv": "L3", "t": "multi", "d": "难", "stem": "发现同账户两个计划成本都在上涨，怀疑内部竞争，可采取？（多选）", "opts": ["A. 检查两计划定向是否高度重叠", "B. 对重叠人群做区隔或合并计划", "C. 错开人群或调整出价策略", "D. 再多建 5 个定向完全一样的计划"], "ans": ["A", "B", "C"], "exp": "内部竞争应通过检查重叠、区隔人群、调整策略解决；D 再建相同定向计划会加剧竞争。"}, {"id": "C-12", "m": "C定向与人群", "tag": "人群质量", "lv": "L2", "t": "single", "d": "中", "stem": "某计划点击多但转化差，怀疑「人群不够精准」，较合理的动作是？", "opts": ["A. 优化定向、聚焦更可能转化的人群", "B. 继续放任不管", "C. 把预算清零", "D. 只换素材颜色"], "ans": "A", "exp": "点击多转化差常与人群匹配度有关，应优化定向、聚焦高转化潜力人群，提升转化效率。"}, {"id": "C-13", "m": "C定向与人群", "tag": "定向宽窄", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：在跑量需求较大时，过窄的定向可能成为限制消耗的瓶颈。", "opts": [], "ans": true, "exp": "定向过窄会让可触达人群规模有限，当需要大跑量时容易触及人群天花板，限制消耗。"}, {"id": "C-14", "m": "C定向与人群", "tag": "兴趣定向", "lv": "L1", "t": "single", "d": "易", "stem": "「兴趣定向」主要依据用户的什么来圈选人群？", "opts": ["A. 兴趣偏好与相关行为", "B. 手机品牌型号", "C. 充电习惯", "D. 屏幕亮度"], "ans": "A", "exp": "兴趣定向基于用户的兴趣标签与相关行为，把广告投给对相关品类更可能感兴趣的人群。"}, {"id": "C-15", "m": "C定向与人群", "tag": "人群诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "为一个新计划设定人群时，新手较稳妥的组合策略有？（多选）", "opts": ["A. 先用相对宽的智能定向让系统探索", "B. 结合核心人群特征做基础圈定", "C. 跑出数据后再针对性收窄优化", "D. 一开始就把定向设到极窄只投几百人"], "ans": ["A", "B", "C"], "exp": "稳妥策略是先适度放宽探索、做基础人群圈定、再依数据收窄；D 一开始极窄不利于冷启动与探索。"}, {"id": "D-09", "m": "D出价与成本控制", "tag": "出价与跑量", "lv": "L1", "t": "single", "d": "易", "stem": "当一个有竞争力的计划「出价过低」时，最常见的直接后果是？", "opts": ["A. 竞争力不足、拿不到量、消耗低", "B. 成本一定最低且跑量最大", "C. 必然爆量", "D. 与跑量无关"], "ans": "A", "exp": "出价过低会削弱竞争力，在竞价中难以胜出，表现为拿不到量、消耗起不来。"}, {"id": "D-10", "m": "D出价与成本控制", "tag": "调价节奏", "lv": "L2", "t": "single", "d": "中", "stem": "需要调整出价时，较稳妥的幅度与节奏是？", "opts": ["A. 每次小幅调整（如5%-10%）并观察一段时间", "B. 一次性翻倍", "C. 每分钟调一次", "D. 随时大起大落"], "ans": "A", "exp": "小幅调整并留出观察期，能减少对系统模型的扰动，避免成本剧烈波动，便于判断调整效果。"}, {"id": "D-11", "m": "D出价与成本控制", "tag": "oCPM逻辑", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：在 oCPM 下，优化师设定的目标成本越低，系统圈定的可投放人群通常越受限。", "opts": [], "ans": true, "exp": "目标成本设得过低，系统能满足该成本预期的人群范围会收窄，可能导致跑量困难，需在成本与量之间平衡。"}, {"id": "D-12", "m": "D出价与成本控制", "tag": "成本诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "成本偏高时，沿转化漏斗排查，正确的对应关系有？（多选）", "opts": ["A. 点击率低 → 检查素材吸引力", "B. 点击后转化低 → 检查落地承接与人群匹配", "C. 人群过窄/竞争激烈 → 检查定向与竞价环境", "D. 成本高一定是平台故意的"], "ans": ["A", "B", "C"], "exp": "成本高应沿漏斗逐层归因：素材、承接/人群、定向与竞争；D 是无依据的归因，错误。"}, {"id": "D-13", "m": "D出价与成本控制", "tag": "不跑量诊断", "lv": "L2", "t": "single", "d": "中", "stem": "一个计划完全不消耗，首先应优先排查的常见项不包括？", "opts": ["A. 素材的点赞数好不好看", "B. 出价是否过低", "C. 预算是否过低/已用完", "D. 素材是否未过审"], "ans": "A", "exp": "不跑量的常见原因是出价过低、预算过低或用完、素材未过审、定向过窄；素材点赞数好看与否并非首要排查项。"}, {"id": "D-14", "m": "D出价与成本控制", "tag": "成本波动", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：成本短期内的小幅波动就立刻大改出价，往往会让计划更不稳定。", "opts": [], "ans": true, "exp": "对短期小幅波动过度反应、频繁大改，会反复打断系统学习，造成更大的成本震荡，应观察趋势再决策。"}, {"id": "D-15", "m": "D出价与成本控制", "tag": "出价策略", "lv": "L3", "t": "multi", "d": "难", "stem": "计划「成本达标但量偏小、想扩量」时，合理的尝试方向有？（多选）", "opts": ["A. 适当提高出价以增强竞争力", "B. 适当放宽定向扩大可触达人群", "C. 增加优质素材丰富创意", "D. 直接把目标成本砍到极低"], "ans": ["A", "B", "C"], "exp": "想在成本达标基础上扩量，可提价、放宽人群、补充素材；D 把目标成本砍极低反而会让跑量更难。"}, {"id": "D-16", "m": "D出价与成本控制", "tag": "出价方式选择", "lv": "L1", "t": "single", "d": "易", "stem": "若客户只关心「曝光量大不大」、不看转化，相对更接近哪种计费思路？", "opts": ["A. 偏曝光/展示量为目标", "B. 以单个转化成本为核心目标", "C. 按私信数付费", "D. 按下载付费"], "ans": "A", "exp": "只看曝光声量时，目标偏向展示/曝光量；而关注获客成本时才以转化成本为核心目标。"}, {"id": "E-07", "m": "E创意与素材", "tag": "封面首图", "lv": "L1", "t": "single", "d": "易", "stem": "在信息流中，决定用户「要不要点开」这条笔记的最关键因素通常是？", "opts": ["A. 封面/首图与标题", "B. 笔记发布的具体秒数", "C. 作者的注册时长", "D. 正文最后一句"], "ans": "A", "exp": "信息流中用户先看到封面和标题，它们直接决定点击意愿，是影响 CTR 的最关键创意因素。"}, {"id": "E-08", "m": "E创意与素材", "tag": "素材数量", "lv": "L2", "t": "single", "d": "中", "stem": "为降低「素材衰退」带来的影响，较好的日常做法是？", "opts": ["A. 保持一定的新素材储备与上新节奏", "B. 永远只用一条素材", "C. 从不更新", "D. 素材越少越好"], "ans": "A", "exp": "持续储备并定期上新素材，可在老素材衰退时及时接力，维持计划的点击率与跑量稳定性。"}, {"id": "E-09", "m": "E创意与素材", "tag": "AB测试", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：评估两条素材优劣时，应在它们获得足够曝光后再比较，而非看几十次曝光就下结论。", "opts": [], "ans": true, "exp": "样本太小时数据偶然性大，结论不可靠。应等素材积累足够曝光与互动后再比较，结论才稳健。"}, {"id": "E-10", "m": "E创意与素材", "tag": "内容方向", "lv": "L3", "t": "multi", "d": "难", "stem": "想提升笔记的种草转化效果，内容上可考虑的方向有？（多选）", "opts": ["A. 真实使用场景与体验感", "B. 戳中目标人群的具体痛点/需求", "C. 清晰可信的卖点呈现", "D. 通篇堆砌夸大、不可信的承诺"], "ans": ["A", "B", "C"], "exp": "真实场景、戳痛点、可信卖点都利于种草；D 夸大不可信反而损害信任、降低转化。"}, {"id": "E-11", "m": "E创意与素材", "tag": "笔记类型", "lv": "L1", "t": "single", "d": "易", "stem": "视频笔记相比图文，通常更有优势的是？", "opts": ["A. 动态展示、信息承载与代入感更强", "B. 一定成本更低", "C. 一定不会衰退", "D. 与效果无关"], "ans": "A", "exp": "视频能动态展示使用过程、承载更多信息、代入感强，适合需要演示或情境化的内容；但并非任何场景都优于图文。"}, {"id": "E-12", "m": "E创意与素材", "tag": "素材衰退", "lv": "L2", "t": "single", "d": "中", "stem": "一条曾经表现很好的素材，最近 CTR 持续走低、消耗下滑，最可能是？", "opts": ["A. 出现了素材衰退，需要上新接替", "B. 平台永久封了这条素材", "C. 一定是出价问题", "D. 与素材无关"], "ans": "A", "exp": "曾经好用的素材 CTR 持续下滑、消耗下降，是典型的素材衰退表现，应及时补充新素材接力。"}, {"id": "E-13", "m": "E创意与素材", "tag": "创意诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "某素材「曝光高、点击率也不错，但转化很低」，可排查的方向有？（多选）", "opts": ["A. 落地页/承接体验是否流畅", "B. 素材承诺与落地实际是否一致（避免「标题党」落差）", "C. 进来的人群是否匹配真实目标客户", "D. 把素材换成纯黑色就能解决"], "ans": ["A", "B", "C"], "exp": "点击好转化差应查承接体验、素材与落地的一致性、人群匹配；D 无依据，错误。"}, {"id": "E-14", "m": "E创意与素材", "tag": "标题", "lv": "L2", "t": "single", "d": "中", "stem": "下列哪种标题思路通常更利于小红书种草点击？", "opts": ["A. 结合具体场景或痛点、给出明确价值", "B. 纯品牌名反复堆砌", "C. 全是无关的热门词", "D. 标题越长越好"], "ans": "A", "exp": "结合场景痛点、给出明确价值的标题更能引发目标用户共鸣和点击；堆砌品牌名或无关词效果差。"}, {"id": "F-08", "m": "F数据诊断与优化", "tag": "核心指标", "lv": "L1", "t": "single", "d": "易", "stem": "若想知道「点进来的人有多少最终转化」，应重点看哪个指标？", "opts": ["A. 转化率 CVR", "B. 曝光量", "C. 粉丝数", "D. 发布时间"], "ans": "A", "exp": "CVR（转化率）= 转化 ÷ 点击，正是衡量点击进来的用户最终转化比例的指标。"}, {"id": "F-09", "m": "F数据诊断与优化", "tag": "漏斗诊断", "lv": "L2", "t": "single", "d": "中", "stem": "「曝光低、几乎没量」的问题，应主要从漏斗的哪一段入手排查？", "opts": ["A. 上游：出价、预算、定向、素材过审等拿量环节", "B. 只看落地页", "C. 只看转化按钮颜色", "D. 无需排查"], "ans": "A", "exp": "曝光低属于漏斗上游问题，应排查出价、预算、定向、素材是否过审等影响「能否拿到量」的环节。"}, {"id": "F-10", "m": "F数据诊断与优化", "tag": "指标关系", "lv": "L2", "t": "judge", "d": "中", "stem": "判断：在转化率不变的情况下，提升点击率通常能带来更低的单次转化成本。", "opts": [], "ans": true, "exp": "点击率提升意味着同等曝光带来更多点击，若转化率不变，则转化更多、单位转化成本下降。"}, {"id": "F-11", "m": "F数据诊断与优化", "tag": "综合诊断", "lv": "L3", "t": "multi", "d": "难", "stem": "一个计划「曝光正常、点击率正常，但转化突然变差」，可重点排查？（多选）", "opts": ["A. 落地页/承接是否出现异常（如打不开、流程变长）", "B. 转化目标或追踪是否设置/统计异常", "C. 近期人群或竞争环境是否变化导致进来的人变差", "D. 一定是曝光不够，加曝光即可"], "ans": ["A", "B", "C"], "exp": "上游正常而转化变差，应查承接、转化追踪、人群质量变化；D 与「曝光点击正常」的现象矛盾。"}, {"id": "F-12", "m": "F数据诊断与优化", "tag": "优化思路", "lv": "L2", "t": "single", "d": "中", "stem": "面对一个表现不佳的计划，更专业的优化方式是？", "opts": ["A. 先用漏斗定位问题环节，再针对性调整", "B. 凭感觉一次性把所有设置都改一遍", "C. 直接删掉重建", "D. 不看数据随便调出价"], "ans": "A", "exp": "专业做法是先用「曝光→点击→转化」漏斗定位问题出在哪一环，再做针对性调整，避免盲目大改。"}, {"id": "F-13", "m": "F数据诊断与优化", "tag": "核心指标", "lv": "L1", "t": "single", "d": "易", "stem": "CTR 主要反映的是？", "opts": ["A. 素材吸引用户点击的能力", "B. 落地页的转化能力", "C. 账户的余额", "D. 粉丝活跃度"], "ans": "A", "exp": "CTR = 点击 ÷ 曝光，主要衡量创意/素材吸引用户点击的能力，是诊断创意优劣的核心指标。"}, {"id": "F-14", "m": "F数据诊断与优化", "tag": "数据周期", "lv": "L3", "t": "multi", "d": "难", "stem": "看数据做优化决策时，为避免被偶然波动误导，应注意？（多选）", "opts": ["A. 关注足够样本量下的趋势而非单点", "B. 区分冷启动期与稳定期的数据", "C. 结合多指标交叉判断而非只看一个数", "D. 只看某一小时的数据就立即大改"], "ans": ["A", "B", "C"], "exp": "稳健决策应看趋势、区分阶段、多指标交叉验证；D 只看单一小时数据就大改容易被偶然波动误导。"}, {"id": "F-15", "m": "F数据诊断与优化", "tag": "综合诊断", "lv": "L2", "t": "single", "d": "中", "stem": "判断一个计划是否「值得继续加预算」，最应综合参考的是？", "opts": ["A. 成本是否稳定达标 + 关键指标是否健康", "B. 仅看它今天消耗了多少", "C. 仅看创意好不好看", "D. 仅看名字"], "ans": "A", "exp": "是否加预算要综合看成本是否稳定达标、CTR/CVR 等关键指标是否健康，而非单看消耗或主观因素。"}];
+let QDATA = (function(){try{const s=localStorage.getItem("xhs_qbank");if(s){const a=JSON.parse(s);if(Array.isArray(a)&&a.length)return a;}}catch(e){}return QDATA_BUILTIN;})();
+const MODULES = ["A平台与流量原理","B账户与计划搭建","C定向与人群","D出价与成本控制","E创意与素材","F数据诊断与优化"];
+const MOD_SHORT = {"A平台与流量原理":"平台原理","B账户与计划搭建":"账户搭建","C定向与人群":"定向人群","D出价与成本控制":"出价成本","E创意与素材":"创意素材","F数据诊断与优化":"数据诊断"};
+const TYPE_CN={single:"单选",multi:"多选",judge:"判断"};
+const WEAK=0.4, MIDV=0.25;
+let pickedMods=new Set(), quiz=[], cur=0, answers={};
+
+// ---- 配置区初始化 ----
+const modChips=document.getElementById('modChips');
+MODULES.forEach(m=>{
+  const c=document.createElement('div');c.className='chip';c.textContent=MOD_SHORT[m];c.dataset.m=m;
+  c.onclick=()=>{c.classList.toggle('on');if(c.classList.contains('on'))pickedMods.add(m);else pickedMods.delete(m);updatePool();};
+  modChips.appendChild(c);
+});
+function pool(){const ms=pickedMods.size?pickedMods:new Set(MODULES);return QDATA.filter(q=>ms.has(q.m));}
+function updatePool(){const p=pool();document.getElementById('poolInfo').textContent=`可选题库：${p.length} 题`;}
+document.getElementById('qCount').onchange=updatePool;updatePool();
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ---- 已做题追踪（按学员记录做过的题目ID）----
+const SEENKEY='xhs_seen';
+function getSeen(name){try{const o=JSON.parse(localStorage.getItem(SEENKEY)||'{}');return new Set(o[name]||[]);}catch(e){return new Set();}}
+function addSeen(name,ids){try{const o=JSON.parse(localStorage.getItem(SEENKEY)||'{}');const s=new Set(o[name]||[]);ids.forEach(i=>s.add(i));o[name]=[...s];localStorage.setItem(SEENKEY,JSON.stringify(o));}catch(e){}}
+
+let examMode='new';
+document.querySelectorAll('#modeChips .chip').forEach(c=>{
+  c.onclick=()=>{document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');examMode=c.dataset.mode;updateSeenInfo();};
+});
+function updateSeenInfo(){
+  const name=document.getElementById('stuName').value.trim();
+  const info=document.getElementById('seenInfo');
+  if(!name||examMode!=='new'){info.textContent='';return;}
+  const seen=getSeen(name);const p=pool();const fresh=p.filter(q=>!seen.has(q.id)).length;
+  info.textContent=`${name} 在当前范围还有 ${fresh} 道新题未做（共 ${p.length} 题，已做 ${p.length-fresh} 题）`;
+}
+document.getElementById('stuName').addEventListener('input',updateSeenInfo);
+const _origUpdatePool=updatePool;updatePool=function(){_origUpdatePool();updateSeenInfo();};
+
+document.getElementById('startBtn').onclick=()=>{
+  const name=document.getElementById('stuName').value.trim();
+  if(!name){toast('请先输入考生姓名');return;}
+  let n=parseInt(document.getElementById('qCount').value);
+  let p=pool();
+  if(p.length===0){toast('当前范围没有题目');return;}
+  let chosen;
+  if(examMode==='new'){
+    const seen=getSeen(name);
+    let fresh=shuffle(p.filter(q=>!seen.has(q.id)));
+    let done=shuffle(p.filter(q=>seen.has(q.id)));
+    if(fresh.length>=n){chosen=fresh.slice(0,n);}
+    else{
+      // 新题不够，先把所有新题给上，再用做过的题补足
+      chosen=fresh.concat(done.slice(0,n-fresh.length));
+      if(fresh.length===0)toast('当前范围已无新题，本场为复习已做题');
+      else toast(`新题剩 ${fresh.length} 道，已用做过的题补足 ${n} 道`);
+    }
+  }else{
+    chosen=shuffle(p).slice(0,Math.min(n,p.length));
+  }
+  quiz=chosen;cur=0;answers={};
+  window._exam={name,start:Date.now()};
+  document.getElementById('setup').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  document.getElementById('pname').textContent=name;
+  renderQ();
+};
+
+function renderQ(){
+  const q=quiz[cur];
+  document.getElementById('pfill').style.width=((cur)/quiz.length*100)+'%';
+  document.getElementById('pnum').textContent=`第 ${cur+1} / ${quiz.length} 题`;
+  const tags=document.getElementById('qtags');
+  tags.innerHTML=`<span class="tag">${MOD_SHORT[q.m]}</span><span class="tag ty">${TYPE_CN[q.t]}</span><span class="tag lv">${q.lv}</span><span class="tag" style="background:#efe7db;color:#7a6a52">${q.d}</span>`;
+  document.getElementById('qstem').textContent=q.stem;
+  const box=document.getElementById('qopts');box.innerHTML='';
+  const isMulti=q.t==='multi';
+  let opts = q.t==='judge' ? ['A. 正确','B. 错误'] : q.opts;
+  opts.forEach(o=>{
+    const letter=o.trim()[0];
+    const d=document.createElement('div');d.className='opt'+(isMulti?' multi':'');
+    const sel=answers[q.id]||(isMulti?[]:null);
+    const on=isMulti?sel.includes(letter):sel===letter;
+    if(on)d.classList.add('sel');
+    d.innerHTML=`<span class="mk">${letter}</span><span class="tx">${o.replace(/^[A-D]\.\s*/,'')}</span>`;
+    d.onclick=()=>{
+      if(isMulti){let s=answers[q.id]||[];if(s.includes(letter))s=s.filter(x=>x!==letter);else s=[...s,letter];answers[q.id]=s;}
+      else{answers[q.id]=letter;}
+      renderQ();
+    };
+    box.appendChild(d);
+  });
+  document.getElementById('prevBtn').style.visibility=cur===0?'hidden':'visible';
+  document.getElementById('nextBtn').textContent=cur===quiz.length-1?'提交考试 ✓':'下一题 →';
+}
+document.getElementById('prevBtn').onclick=()=>{if(cur>0){cur--;renderQ();}};
+document.getElementById('nextBtn').onclick=()=>{
+  if(cur<quiz.length-1){cur++;renderQ();}
+  else finish();
+};
+
+function judge(q){
+  const a=answers[q.id];
+  if(a==null||(Array.isArray(a)&&a.length===0))return {state:'unanswered',correct:false};
+  let user,correct;
+  if(q.t==='judge'){user=(a==='A');correct=(user===q.ans);return{state:'done',correct,userStr:user?'正确':'错误',ansStr:q.ans?'正确':'错误'};}
+  if(q.t==='multi'){const cs=q.ans.slice().sort().join('');const us=a.slice().sort().join('');correct=cs===us;return{state:'done',correct,userStr:us,ansStr:cs};}
+  correct=(a===q.ans);return{state:'done',correct,userStr:a,ansStr:q.ans};
+}
+
+function finish(){
+  let correct=0,answered=0;
+  const modStat={};MODULES.forEach(m=>modStat[m]={tot:0,wrong:0});
+  const wrongList=[];
+  quiz.forEach(q=>{
+    const r=judge(q);modStat[q.m].tot++;
+    if(r.state==='unanswered'){modStat[q.m].wrong++;wrongList.push({q,r});return;}
+    answered++;
+    if(r.correct)correct++;else{modStat[q.m].wrong++;wrongList.push({q,r});}
+  });
+  const scorePct=Math.round(correct/quiz.length*100);
+  saveHist(window._exam.name,scorePct,correct,quiz.length);
+  addSeen(window._exam.name,quiz.map(q=>q.id));
+  const code=makeCode(window._exam.name,scorePct,correct,modStat);
+  renderResult(scorePct,correct,answered,modStat,wrongList,code);
+}
+
+// 生成成绩码：紧凑JSON -> Base64(兼容中文)
+function makeCode(name,score,correct,modStat){
+  const m={};MODULES.forEach((mm,i)=>{const s=modStat[mm];if(s.tot>0)m["m"+i]=[s.tot,s.wrong];});
+  const payload={v:1,n:name,d:new Date().toISOString().slice(0,16),s:score,c:correct,m};
+  const json=JSON.stringify(payload);
+  const b64=btoa(unescape(encodeURIComponent(json)));
+  return "XHS1:"+b64;
+}
+
+function renderResult(scorePct,correct,answered,modStat,wrongList,code){
+  document.getElementById('quiz').classList.add('hidden');
+  const R=document.getElementById('result');R.classList.remove('hidden');
+  // 模块错误率
+  const rows=MODULES.filter(m=>modStat[m].tot>0).map(m=>{
+    const s=modStat[m];const er=s.wrong/s.tot;return{m,er,tot:s.tot,wrong:s.wrong};
+  });
+  const radar=buildRadar(rows);
+  let modRows=rows.map(r=>{
+    const pct=Math.round(r.er*100);
+    let badge=r.er>=WEAK?'<span class="badge weak">⚠ 薄弱</span>':r.er>=MIDV?'<span class="badge mid">需关注</span>':'<span class="badge ok">良好</span>';
+    let col=r.er>=WEAK?'var(--coral)':r.er>=MIDV?'var(--amber)':'var(--green)';
+    return `<tr><td>${MOD_SHORT[r.m]}</td><td class="bar-cell"><span class="bar-bg"><span class="bar-fi" style="width:${pct}%;background:${col}"></span></span>${pct}%</td><td>${r.wrong}/${r.tot}</td><td>${badge}</td></tr>`;
+  }).join('');
+  const weakMods=rows.filter(r=>r.er>=WEAK).map(r=>MOD_SHORT[r.m]);
+  let wrongHtml;
+  if(wrongList.length===0){wrongHtml='<div class="empty-good">🎉 全部答对，没有错题！</div>';}
+  else{wrongHtml=wrongList.map(w=>{
+    const q=w.q,r=w.r;
+    const yours=r.state==='unanswered'?'<span style="color:var(--muted)">未作答</span>':`<span class="rv-yours">${r.userStr}</span>`;
+    return `<div class="rv-item"><div class="rv-q">${q.stem}</div>
+      <div class="rv-line"><span class="k">你的答案</span>${yours}</div>
+      <div class="rv-line"><span class="k">正确答案</span><span class="rv-correct">${r.ansStr}</span></div>
+      <div class="rv-exp">💡 ${q.exp}</div></div>`;
+  }).join('');}
+  R.innerHTML=`
+  <div class="card">
+    <div class="score-hero"><div class="big">${scorePct}</div><div class="lbl">本场得分</div></div>
+    <div class="stat-row">
+      <div class="stat"><div class="v">${correct}/${quiz.length}</div><div class="k">答对题数</div></div>
+      <div class="stat"><div class="v">${quiz.length-answered}</div><div class="k">未作答</div></div>
+      <div class="stat"><div class="v" style="color:${weakMods.length?'var(--coral)':'var(--green)'}">${weakMods.length}</div><div class="k">薄弱模块</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2><span class="n">◆</span>能力雷达图</h2>
+    <div class="desc">各模块掌握度（外圈=掌握好）。凹陷处即知识薄弱项。</div>
+    <div class="radar-box">${radar}</div>
+    <table class="mod-table"><thead><tr><th>知识模块</th><th>错误率</th><th>错/总</th><th>评定</th></tr></thead><tbody>${modRows}</tbody></table>
+    ${weakMods.length?`<div style="margin-top:16px;padding:13px 15px;background:var(--coral-soft);border-radius:10px;font-size:13.5px;color:var(--coral-d)"><b>薄弱项提示：</b>「${weakMods.join('、')}」错误率偏高，建议作为下一阶段重点回顾方向。</div>`:`<div style="margin-top:16px;padding:13px 15px;background:#e2efe6;border-radius:10px;font-size:13.5px;color:var(--green)">本场各模块掌握均衡，没有明显薄弱项，继续保持。</div>`}
+  </div>
+  <div class="card review">
+    <h2><span class="n">✎</span>错题回顾</h2>
+    <div class="desc">逐题查看正确答案与解析，这些题会是你的重点复盘内容。</div>
+    ${wrongHtml}
+  </div>
+  <div class="card">
+    <h2><span class="n">⇪</span>提交成绩给带教</h2>
+    <div class="desc">点击复制下方成绩码，发送给你的带教/管理员汇总。成绩码已包含你的姓名、得分与各模块表现。</div>
+    <textarea id="scoreCode" readonly style="width:100%;height:78px;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:monospace;font-size:12px;background:var(--paper);color:var(--ink);resize:none;word-break:break-all">${code}</textarea>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn" onclick="copyCode()">📋 复制成绩码</button>
+    </div>
+  </div>
+  <div class="btn-row" style="justify-content:center">
+    <button class="btn ghost" onclick="location.reload()">返回 · 开始新考试</button>
+  </div>
+  <div class="footer-note">题目基于通用投放原理，重在判断逻辑；建议由资深优化师对照最新平台后台校对后使用。<br>数据保存在本机浏览器，清除浏览器数据将一并清空。</div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ---- SVG 雷达图 ----
+function buildRadar(rows){
+  const N=rows.length, cx=150,cy=140,R=100;
+  if(N<3){ // 少于3模块画不成雷达，用占位
+    return `<svg width="300" height="60"><text x="150" y="35" text-anchor="middle" fill="#8a7d70" font-size="13">模块数不足，雷达图需≥3个模块</text></svg>`;
+  }
+  const ang=i=>(-90+i*360/N)*Math.PI/180;
+  let grid='';
+  [0.25,0.5,0.75,1].forEach(g=>{
+    let pts=rows.map((_,i)=>`${cx+Math.cos(ang(i))*R*g},${cy+Math.sin(ang(i))*R*g}`).join(' ');
+    grid+=`<polygon points="${pts}" fill="none" stroke="#e3d9cd" stroke-width="1"/>`;
+  });
+  let axes='',labels='';
+  rows.forEach((r,i)=>{
+    const x=cx+Math.cos(ang(i))*R, y=cy+Math.sin(ang(i))*R;
+    axes+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e3d9cd" stroke-width="1"/>`;
+    const lx=cx+Math.cos(ang(i))*(R+24), ly=cy+Math.sin(ang(i))*(R+18);
+    const er=r.er;
+    const col=er>=WEAK?'#e0483d':er>=MIDV?'#d99100':'#3f8a5c';
+    labels+=`<text x="${lx}" y="${ly}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${col}">${MOD_SHORT[r.m]}</text>`;
+  });
+  // 掌握度 = 1 - 错误率
+  let pts=rows.map((r,i)=>{const v=1-r.er;return `${cx+Math.cos(ang(i))*R*v},${cy+Math.sin(ang(i))*R*v}`;}).join(' ');
+  let dots=rows.map((r,i)=>{const v=1-r.er;const x=cx+Math.cos(ang(i))*R*v,y=cy+Math.sin(ang(i))*R*v;return `<circle cx="${x}" cy="${y}" r="3.5" fill="#e0483d"/>`;}).join('');
+  return `<svg width="300" height="290" viewBox="0 0 300 290">
+    ${grid}${axes}
+    <polygon points="${pts}" fill="rgba(224,72,61,.18)" stroke="#e0483d" stroke-width="2"/>
+    ${dots}${labels}</svg>`;
+}
+
+// ---- 历史记录 (localStorage) ----
+const HKEY='xhs_exam_hist';
+function getHist(){try{return JSON.parse(localStorage.getItem(HKEY)||'[]');}catch(e){return[];}}
+function saveHist(name,score,correct,total){
+  const h=getHist();h.unshift({name,score,correct,total,date:new Date().toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})});
+  localStorage.setItem(HKEY,JSON.stringify(h.slice(0,30)));
+}
+function renderHist(){
+  const h=getHist();const box=document.getElementById('histList');
+  if(h.length===0){box.innerHTML='<div style="color:var(--muted);font-size:13px;padding:6px 0">暂无记录。完成一场考试后会显示在这里。</div>';return;}
+  box.innerHTML=h.map(x=>`<div class="hist-item"><span><b>${x.name}</b> · ${x.date}</span><span style="color:${x.score>=70?'var(--green)':'var(--coral)'};font-weight:700">${x.score}分 (${x.correct}/${x.total})</span></div>`).join('');
+}
+document.getElementById('clearHist').onclick=()=>{if(confirm('确定清空所有历史成绩？')){localStorage.removeItem(HKEY);renderHist();toast('已清空');}};
+renderHist();
+
+// ---- 题库管理：导入 CSV / 恢复内置 ----
+const QBKEY='xhs_qbank';
+function updateQbCount(){const el=document.getElementById('qbCount');if(el)el.textContent=QDATA.length;updatePool&&updatePool();}
+function impMsg(m,ok){const d=document.getElementById('importMsg');d.style.color=ok?'var(--green)':'var(--coral)';d.innerHTML=m;}
+
+// 简单 CSV 解析（支持引号包裹、引号内逗号与换行、"" 转义）
+function parseCSV(text){
+  text=text.replace(/^\uFEFF/,'');const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=c;}
+    else{if(c==='"')q=true;else if(c===','){row.push(cur);cur='';}
+      else if(c==='\n'){row.push(cur);rows.push(row);row=[];cur='';}
+      else if(c==='\r'){}else cur+=c;}
+  }
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows.filter(r=>r.some(c=>c.trim()!==''));
+}
+
+// 把一行 CSV 转成题目对象。列顺序：
+// 题目ID,模块,知识点标签,层级,题型,难度,题干,选项A,选项B,选项C,选项D,答案,解析
+function rowToQ(r,idx){
+  const g=i=>(r[i]||'').trim();
+  const id=g(0),m=g(1),tag=g(2),lv=g(3).toUpperCase(),tRaw=g(4),d=g(5),stem=g(6);
+  const oA=g(7),oB=g(8),oC=g(9),oD=g(10),ansRaw=g(11),exp=g(12);
+  if(!id||!m||!stem)throw `第 ${idx} 行缺少 题目ID/模块/题干`;
+  let t=({ '单选':'single','单选题':'single','single':'single',
+           '多选':'multi','多选题':'multi','multi':'multi',
+           '判断':'judge','判断题':'judge','judge':'judge'})[tRaw];
+  if(!t)throw `第 ${idx} 行题型「${tRaw}」无法识别（应为 单选/多选/判断）`;
+  let opts=[],ans;
+  if(t==='judge'){
+    opts=[];
+    const a=ansRaw.replace(/\s/g,'');
+    if(['正确','对','true','T','是','A'].includes(a))ans=true;
+    else if(['错误','错','false','F','否','B'].includes(a))ans=false;
+    else throw `第 ${idx} 行判断题答案「${ansRaw}」无法识别（应为 正确/错误）`;
+  }else{
+    [['A',oA],['B',oB],['C',oC],['D',oD]].forEach(([L,txt])=>{if(txt)opts.push(L+'. '+txt);});
+    if(opts.length<2)throw `第 ${idx} 行选项不足 2 个`;
+    const letters=ansRaw.toUpperCase().replace(/[^ABCD]/g,'').split('');
+    if(letters.length===0)throw `第 ${idx} 行答案「${ansRaw}」无效（应为如 A 或 ABC）`;
+    if(t==='multi')ans=[...new Set(letters)].sort();
+    else ans=letters[0];
+  }
+  return {id,m,tag,lv:(['L1','L2','L3'].includes(lv)?lv:'L1'),t,d:(d||'中'),stem,opts,ans,exp:exp||''};
+}
+
+document.getElementById('importBtn').onclick=()=>document.getElementById('csvFile').click();
+document.getElementById('csvFile').onchange=(e)=>{
+  const f=e.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      let rows=parseCSV(rd.result);
+      if(rows.length<2)throw '文件内容为空或只有表头';
+      // 跳过表头（若首行第一格像"题目ID"/含"ID"或"题干"）
+      const head=rows[0].join('');
+      if(/题目ID|题干|ID|模块/.test(head))rows=rows.slice(1);
+      const out=[];const errs=[];const seenId=new Set();
+      rows.forEach((r,i)=>{try{const q=rowToQ(r,i+2);if(seenId.has(q.id))throw `题目ID「${q.id}」重复`;seenId.add(q.id);out.push(q);}catch(err){errs.push(err);}});
+      if(out.length===0)throw '没有解析出有效题目。'+(errs[0]||'');
+      QDATA=out;localStorage.setItem(QBKEY,JSON.stringify(out));
+      updateQbCount();
+      let msg=`✅ 导入成功：共 ${out.length} 题已生效`;
+      if(errs.length)msg+=`，另有 ${errs.length} 行被跳过（如：${errs[0]}）`;
+      impMsg(msg,true);toast('题库已更新为 '+out.length+' 题');
+    }catch(err){impMsg('❌ 导入失败：'+err,false);}
+    document.getElementById('csvFile').value='';
+  };
+  rd.readAsText(f,'UTF-8');
+};
+document.getElementById('resetQbBtn').onclick=()=>{
+  if(confirm('恢复为系统内置题库？已导入的自定义题库将从本机移除（不影响内置题）。')){
+    localStorage.removeItem(QBKEY);QDATA=QDATA_BUILTIN;updateQbCount();
+    impMsg('已恢复内置题库（'+QDATA.length+' 题）',true);
+  }
+};
+updateQbCount();
+
+function copyCode(){
+  const t=document.getElementById('scoreCode');t.select();t.setSelectionRange(0,99999);
+  navigator.clipboard.writeText(t.value).then(()=>toast('成绩码已复制，发给带教即可')).catch(()=>{document.execCommand('copy');toast('成绩码已复制');});
+}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+</script>
+</body>
+</html>
